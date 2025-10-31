@@ -1,0 +1,74 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+void selectionsort(int* l, int* r) {
+    for (int *i = l; i < r; i++) {
+        int minz = *i, *ind = i;
+        for (int *j = i + 1; j < r; j++) {
+            if (*j < minz) minz = *j, ind = j;
+        }
+        swap(*i, *ind);
+    }
+}
+
+// Функция для проверки отсортированности
+bool isSorted(int* arr, int size) {
+    for (int i = 1; i < size; i++) {
+        if (arr[i] < arr[i-1]) return false;
+    }
+    return true;
+}
+
+// Функция для вывода массива
+void printArray(int* arr, int size) {
+    for (int i = 0; i < size; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    // Тест 1: Простой массив
+    int arr1[] = {5, 2, 8, 1, 9};
+    int size1 = sizeof(arr1)/sizeof(arr1[0]);
+    
+    cout << "Исходный массив: ";
+    printArray(arr1, size1);
+    
+    selectionsort(arr1, arr1 + size1);
+    
+    cout << "Отсортированный массив: ";
+    printArray(arr1, size1);
+    cout << "Проверка сортировки: " << (isSorted(arr1, size1) ? "УСПЕХ" : "ОШИБКА") << endl;
+    cout << endl;
+    
+    // Тест 2: Уже отсортированный массив
+    int arr2[] = {1, 2, 3, 4, 5};
+    int size2 = sizeof(arr2)/sizeof(arr2[0]);
+    
+    cout << "Исходный массив: ";
+    printArray(arr2, size2);
+    
+    selectionsort(arr2, arr2 + size2);
+    
+    cout << "Отсортированный массив: ";
+    printArray(arr2, size2);
+    cout << "Проверка сортировки: " << (isSorted(arr2, size2) ? "УСПЕХ" : "ОШИБКА") << endl;
+    cout << endl;
+    
+    // Тест 3: Массив в обратном порядке
+    int arr3[] = {5, 4, 3, 2, 1};
+    int size3 = sizeof(arr3)/sizeof(arr3[0]);
+    
+    cout << "Исходный массив: ";
+    printArray(arr3, size3);
+    
+    selectionsort(arr3, arr3 + size3);
+    
+    cout << "Отсортированный массив: ";
+    printArray(arr3, size3);
+    cout << "Проверка сортировки: " << (isSorted(arr3, size3) ? "УСПЕХ" : "ОШИБКА") << endl;
+    
+    return 0;
+}
