@@ -476,8 +476,6 @@ class GFG {
     }
 }
 
-// This code is contributed by equbalzeeshan
-
 //Фибоначи поиск / Fibonacci Search; O(log n) Time and O(1) Space
 import java.io.*;
 
