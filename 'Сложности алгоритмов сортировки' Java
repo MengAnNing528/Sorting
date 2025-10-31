@@ -27,3 +27,26 @@ void insertionsort(int* l, int* r) {
     }
 }
 // Сложность: O(n²) худший, O(n) лучший
+
+// Сортировка слиянием - всегда O(n log n)
+void _mergesort(int* l, int* r, int* temp) {
+    if (r - l <= 1) return;               // O(1)
+    _mergesort(l, m, temp);               // T(n/2)
+    _mergesort(m, r, temp);               // T(n/2)
+    merge(l, m, r, temp);                 // O(n)
+}
+// Рекуррентность: T(n) = 2T(n/2) + O(n) → O(n log n)
+
+// Быстрая сортировка - O(n log n) в среднем, O(n²) в худшем
+void quicksort(int* l, int* r) {
+    quicksort(l, rr + 1);                 // T(k)
+    quicksort(ll, r);                     // T(n-k-1)
+}
+// Сложность: O(n log n) средний, O(n²) худший (уже отсортирован)
+
+// Пирамидальная сортировка - всегда O(n log n)
+void heapsort(int* l, int* r) {
+    for (int *i = l; i < r; i++) h.push(*i); // n × O(log n)
+    for (int *i = l; i < r; i++) h.pop();    // n × O(log n)
+}
+// Сложность: O(n log n)
