@@ -1,3 +1,4 @@
+//Сортировка выбором / Selection sort; O(n2)
 void selectionsort(int* l, int* r) {
 	for (int *i = l; i < r; i++) {
 		int minz = *i, *ind = i;
