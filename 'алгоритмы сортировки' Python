@@ -1,3 +1,4 @@
+//Selection sort
 def selection_sort(arr):
     n = len(arr)
     for i in range(n):
@@ -7,6 +8,7 @@ def selection_sort(arr):
                 min_idx = j
         arr[i], arr[min_idx] = arr[min_idx], arr[i]
 
+//Bubble sort
 def bubble_sort(arr):
     n = len(arr)
     for i in range(n):
@@ -18,6 +20,7 @@ def bubble_sort(arr):
         if not swapped:
             break
 
+//Insertion sort
 def insertion_sort(arr):
     for i in range(1, len(arr)):
         key = arr[i]
@@ -27,6 +30,7 @@ def insertion_sort(arr):
             j -= 1
         arr[j + 1] = key
 
+//Merge
 def merge(left, right):
     result = []
     i = j = 0
@@ -41,6 +45,7 @@ def merge(left, right):
     result.extend(right[j:])
     return result
 
+//Merge sort
 def merge_sort(arr):
     if len(arr) <= 1:
         return arr
@@ -49,6 +54,7 @@ def merge_sort(arr):
     right = merge_sort(arr[mid:])
     return merge(left, right)
 
+//Merge insertion sort
 def merge_insertion_sort(arr, threshold=32):
     # Hybrid merge-insertion sort
     if len(arr) <= threshold:
@@ -62,6 +68,7 @@ def merge_insertion_sort(arr, threshold=32):
     merged = merge(left, right)
     arr[:] = merged
 
+//Shell's sort
 def shell_sort(arr):
     n = len(arr)
     gap = n // 2
@@ -78,7 +85,7 @@ def shell_sort(arr):
             arr[j] = temp
         gap //= 2
 
-Quicksort
+//Quicksort
 def quicksort(arr):
     if len(arr) <= 1:
         return arr
@@ -87,7 +94,8 @@ def quicksort(arr):
     middle = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
     return quicksort(left) + middle + quicksort(right)
-Heapsort
+
+//Heapsort
 def heapify(arr, n, i):
     largest = i
     l = 2 * i + 1
@@ -107,13 +115,15 @@ def heapsort(arr):
     for i in range(n - 1, 0, -1):
         arr[0], arr[i] = arr[i], arr[0]
         heapify(arr, i, 0)
-Sequential Search
+
+//Sequential Search
 def sequential_search(arr, target):
     for index, value in enumerate(arr):
         if value == target:
             return index
     return -1
-Binary Search (assumes sorted array)
+
+//Binary Search (assumes sorted array)
 def binary_search(arr, target):
     left, right = 0, len(arr) - 1
     while left <= right:
@@ -125,7 +135,8 @@ def binary_search(arr, target):
         else:
             right = mid - 1
     return -1
-Interpolation Search (assumes sorted, uniformly distributed array)
+
+//Interpolation Search (assumes sorted, uniformly distributed array)
 def interpolation_search(arr, target):
     low, high = 0, len(arr) - 1
     while low <= high and target >= arr[low] and target <= arr[high]:
@@ -142,7 +153,8 @@ def interpolation_search(arr, target):
         else:
             high = mid - 1
     return -1
-Fibonacci Search (assumes sorted array)
+
+//Fibonacci Search (assumes sorted array)
 def fibonacci_search(arr, target):
     n = len(arr)
     # Initialize Fibonacci numbers
