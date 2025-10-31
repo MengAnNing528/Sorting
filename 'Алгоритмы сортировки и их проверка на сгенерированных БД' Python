@@ -1,0 +1,574 @@
+import time
+import math
+import random
+from typing import List, Tuple, Dict, Any
+import matplotlib.pyplot as plt
+import numpy as np
+
+class SortingSearchingAlgorithms:
+    def __init__(self):
+        self.operations_count = 0
+        self.time_taken = 0
+        
+    def reset_counters(self):
+        self.operations_count = 0
+        self.time_taken = 0
+    
+    # 1. Сортировка выбором (Selection Sort)
+    def selection_sort(self, arr: List[int]) -> List[int]:
+        self.reset_counters()
+        start_time = time.time()
+        arr = arr.copy()
+        n = len(arr)
+        
+        for i in range(n):
+            min_idx = i
+            for j in range(i + 1, n):
+                self.operations_count += 1
+                if arr[j] < arr[min_idx]:
+                    min_idx = j
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+            self.operations_count += 1  # swap operation
+        
+        self.time_taken = time.time() - start_time
+        return arr
+    
+    # 2. Сортировка обменом (Bubble Sort)
+    def bubble_sort(self, arr: List[int]) -> List[int]:
+        self.reset_counters()
+        start_time = time.time()
+        arr = arr.copy()
+        n = len(arr)
+        
+        for i in range(n):
+            swapped = False
+            for j in range(0, n - i - 1):
+                self.operations_count += 1
+                if arr[j] > arr[j + 1]:
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                    swapped = True
+                    self.operations_count += 1  # swap operation
+            if not swapped:
+                break
+        
+        self.time_taken = time.time() - start_time
+        return arr
+    
+    # 3. Сортировка вставками (Insertion Sort)
+    def insertion_sort(self, arr: List[int]) -> List[int]:
+        self.reset_counters()
+        start_time = time.time()
+        arr = arr.copy()
+        
+        for i in range(1, len(arr)):
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and key < arr[j]:
+                self.operations_count += 1
+                arr[j + 1] = arr[j]
+                j -= 1
+                self.operations_count += 1  # shift operation
+            arr[j + 1] = key
+            self.operations_count += 1  # insertion operation
+        
+        self.time_taken = time.time() - start_time
+        return arr
+    
+    # 4. Сортировка слиянием (Merge Sort)
+    def merge_sort(self, arr: List[int]) -> List[int]:
+        self.reset_counters()
+        start_time = time.time()
+        result = self._merge_sort_recursive(arr.copy())
+        self.time_taken = time.time() - start_time
+        return result
+    
+    def _merge_sort_recursive(self, arr: List[int]) -> List[int]:
+        if len(arr) <= 1:
+            return arr
+        
+        mid = len(arr) // 2
+        left = self._merge_sort_recursive(arr[:mid])
+        right = self._merge_sort_recursive(arr[mid:])
+        
+        return self._merge(left, right)
+    
+    def _merge(self, left: List[int], right: List[int]) -> List[int]:
+        result = []
+        i = j = 0
+        
+        while i < len(left) and j < len(right):
+            self.operations_count += 1
+            if left[i] <= right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+        
+        result.extend(left[i:])
+        result.extend(right[j:])
+        self.operations_count += len(left[i:]) + len(right[j:])
+        
+        return result
+    
+    # 5. Сортировка Шелла (Shell Sort)
+    def shell_sort(self, arr: List[int]) -> List[int]:
+        self.reset_counters()
+        start_time = time.time()
+        arr = arr.copy()
+        n = len(arr)
+        
+        gap = n // 2
+        while gap > 0:
+            for i in range(gap, n):
+                temp = arr[i]
+                j = i
+                while j >= gap and arr[j - gap] > temp:
+                    self.operations_count += 1
+                    arr[j] = arr[j - gap]
+                    j -= gap
+                    self.operations_count += 1  # shift operation
+                arr[j] = temp
+                self.operations_count += 1  # insertion operation
+            gap //= 2
+        
+        self.time_taken = time.time() - start_time
+        return arr
+    
+    # 6. Быстрая сортировка (Quick Sort)
+    def quick_sort(self, arr: List[int]) -> List[int]:
+        self.reset_counters()
+        start_time = time.time()
+        result = self._quick_sort_recursive(arr.copy())
+        self.time_taken = time.time() - start_time
+        return result
+    
+    def _quick_sort_recursive(self, arr: List[int]) -> List[int]:
+        if len(arr) <= 1:
+            return arr
+        
+        pivot = arr[len(arr) // 2]
+        left = [x for x in arr if x < pivot]
+        middle = [x for x in arr if x == pivot]
+        right = [x for x in arr if x > pivot]
+        
+        self.operations_count += len(arr)  # comparisons for partitioning
+        
+        return self._quick_sort_recursive(left) + middle + self._quick_sort_recursive(right)
+    
+    # 7. Пирамидальная сортировка (Heap Sort)
+    def heap_sort(self, arr: List[int]) -> List[int]:
+        self.reset_counters()
+        start_time = time.time()
+        arr = arr.copy()
+        
+        def heapify(n, i):
+            largest = i
+            left = 2 * i + 1
+            right = 2 * i + 2
+            
+            if left < n and arr[left] > arr[largest]:
+                largest = left
+            if right < n and arr[right] > arr[largest]:
+                largest = right
+                
+            self.operations_count += 2  # two comparisons
+            
+            if largest != i:
+                arr[i], arr[largest] = arr[largest], arr[i]
+                self.operations_count += 1  # swap operation
+                heapify(n, largest)
+        
+        n = len(arr)
+        
+        # Build max heap
+        for i in range(n // 2 - 1, -1, -1):
+            heapify(n, i)
+        
+        # Extract elements from heap
+        for i in range(n - 1, 0, -1):
+            arr[i], arr[0] = arr[0], arr[i]
+            self.operations_count += 1  # swap operation
+            heapify(i, 0)
+        
+        self.time_taken = time.time() - start_time
+        return arr
+    
+    # 8. Последовательный поиск (Sequential Search)
+    def sequential_search(self, arr: List[int], target: int) -> Tuple[int, Dict[str, Any]]:
+        self.reset_counters()
+        start_time = time.time()
+        
+        for i, num in enumerate(arr):
+            self.operations_count += 1
+            if num == target:
+                self.time_taken = time.time() - start_time
+                return i, self._get_search_stats()
+        
+        self.time_taken = time.time() - start_time
+        return -1, self._get_search_stats()
+    
+    # 9. Бинарный поиск (Binary Search)
+    def binary_search(self, arr: List[int], target: int) -> Tuple[int, Dict[str, Any]]:
+        self.reset_counters()
+        start_time = time.time()
+        
+        left, right = 0, len(arr) - 1
+        
+        while left <= right:
+            self.operations_count += 1
+            mid = (left + right) // 2
+            
+            if arr[mid] == target:
+                self.time_taken = time.time() - start_time
+                return mid, self._get_search_stats()
+            elif arr[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        self.time_taken = time.time() - start_time
+        return -1, self._get_search_stats()
+    
+    # 10. Интерполирующий поиск (Interpolation Search)
+    def interpolation_search(self, arr: List[int], target: int) -> Tuple[int, Dict[str, Any]]:
+        self.reset_counters()
+        start_time = time.time()
+        
+        left, right = 0, len(arr) - 1
+        
+        while left <= right and target >= arr[left] and target <= arr[right]:
+            self.operations_count += 1
+            
+            if left == right:
+                if arr[left] == target:
+                    self.time_taken = time.time() - start_time
+                    return left, self._get_search_stats()
+                break
+            
+            # Interpolation formula
+            pos = left + ((target - arr[left]) * (right - left)) // (arr[right] - arr[left])
+            
+            if arr[pos] == target:
+                self.time_taken = time.time() - start_time
+                return pos, self._get_search_stats()
+            elif arr[pos] < target:
+                left = pos + 1
+            else:
+                right = pos - 1
+        
+        self.time_taken = time.time() - start_time
+        return -1, self._get_search_stats()
+    
+    # 11. Поиск Фибоначчи (Fibonacci Search)
+    def fibonacci_search(self, arr: List[int], target: int) -> Tuple[int, Dict[str, Any]]:
+        self.reset_counters()
+        start_time = time.time()
+        
+        n = len(arr)
+        
+        # Initialize Fibonacci numbers
+        fib2 = 0  # (m-2)th Fibonacci number
+        fib1 = 1  # (m-1)th Fibonacci number
+        fib = fib1 + fib2  # mth Fibonacci number
+        
+        # Find the smallest Fibonacci number greater than or equal to n
+        while fib < n:
+            fib2 = fib1
+            fib1 = fib
+            fib = fib1 + fib2
+        
+        offset = -1
+        
+        while fib > 1:
+            self.operations_count += 1
+            
+            # Check if fib2 is a valid location
+            i = min(offset + fib2, n - 1)
+            
+            if arr[i] < target:
+                fib = fib1
+                fib1 = fib2
+                fib2 = fib - fib1
+                offset = i
+            elif arr[i] > target:
+                fib = fib2
+                fib1 = fib1 - fib2
+                fib2 = fib - fib1
+            else:
+                self.time_taken = time.time() - start_time
+                return i, self._get_search_stats()
+        
+        # Compare the last element
+        if fib1 and offset + 1 < n and arr[offset + 1] == target:
+            self.time_taken = time.time() - start_time
+            return offset + 1, self._get_search_stats()
+        
+        self.time_taken = time.time() - start_time
+        return -1, self._get_search_stats()
+    
+    def _get_search_stats(self) -> Dict[str, Any]:
+        return {
+            'operations': self.operations_count,
+            'time': self.time_taken
+        }
+    
+    def get_sort_stats(self) -> Dict[str, Any]:
+        return {
+            'operations': self.operations_count,
+            'time': self.time_taken
+        }
+
+class PerformanceAnalyzer:
+    def __init__(self):
+        self.algorithms = SortingSearchingAlgorithms()
+    
+    def generate_test_data(self, size: int = 1000) -> Tuple[List[int], List[int]]:
+        """Генерирует тестовые данные для сортировки и поиска"""
+        random_data = [random.randint(1, size * 10) for _ in range(size)]
+        sorted_data = sorted(random_data)
+        return random_data, sorted_data
+    
+    def test_sorting_algorithms(self, data: List[int]) -> Dict[str, Dict[str, Any]]:
+        """Тестирует все алгоритмы сортировки"""
+        results = {}
+        
+        algorithms = {
+            'Selection Sort': self.algorithms.selection_sort,
+            'Bubble Sort': self.algorithms.bubble_sort,
+            'Insertion Sort': self.algorithms.insertion_sort,
+            'Merge Sort': self.algorithms.merge_sort,
+            'Shell Sort': self.algorithms.shell_sort,
+            'Quick Sort': self.algorithms.quick_sort,
+            'Heap Sort': self.algorithms.heap_sort
+        }
+        
+        for name, algorithm in algorithms.items():
+            print(f"Testing {name}...")
+            sorted_data = algorithm(data)
+            results[name] = {
+                'time': self.algorithms.time_taken,
+                'operations': self.algorithms.operations_count,
+                'sorted': sorted_data == sorted(data)
+            }
+        
+        return results
+    
+    def test_search_algorithms(self, data: List[int], target: int) -> Dict[str, Dict[str, Any]]:
+        """Тестирует все алгоритмы поиска"""
+        results = {}
+        
+        algorithms = {
+            'Sequential Search': self.algorithms.sequential_search,
+            'Binary Search': self.algorithms.binary_search,
+            'Interpolation Search': self.algorithms.interpolation_search,
+            'Fibonacci Search': self.algorithms.fibonacci_search
+        }
+        
+        for name, algorithm in algorithms.items():
+            print(f"Testing {name}...")
+            index, stats = algorithm(data, target)
+            results[name] = {
+                'index': index,
+                'time': stats['time'],
+                'operations': stats['operations'],
+                'found': index != -1
+            }
+        
+        return results
+    
+    def generate_report(self, size: int = 1000):
+        """Генерирует полный отчет"""
+        print("=" * 80)
+        print("ПОЛНЫЙ ОТЧЕТ ПО АЛГОРИТМАМ СОРТИРОВКИ И ПОИСКА")
+        print("=" * 80)
+        
+        # Генерация тестовых данных
+        random_data, sorted_data = self.generate_test_data(size)
+        target = random.choice(sorted_data)  # Цель для поиска
+        
+        print(f"\nРазмер данных: {size}")
+        print(f"Цель для поиска: {target}")
+        print(f"Первые 10 элементов исходных данных: {random_data[:10]}")
+        
+        # Тестирование сортировки
+        print("\n" + "=" * 50)
+        print("РЕЗУЛЬТАТЫ СОРТИРОВКИ")
+        print("=" * 50)
+        
+        sort_results = self.test_sorting_algorithms(random_data)
+        
+        # Вывод результатов сортировки
+        print(f"\n{'Алгоритм':<20} {'Время (с)':<12} {'Операции':<15} {'Корректность'}")
+        print("-" * 65)
+        
+        for name, result in sort_results.items():
+            print(f"{name:<20} {result['time']:<12.6f} {result['operations']:<15} {result['sorted']}")
+        
+        # Тестирование поиска
+        print("\n" + "=" * 50)
+        print("РЕЗУЛЬТАТЫ ПОИСКА")
+        print("=" * 50)
+        
+        search_results = self.test_search_algorithms(sorted_data, target)
+        
+        # Вывод результатов поиска
+        print(f"\n{'Алгоритм':<20} {'Индекс':<10} {'Время (с)':<12} {'Операции':<15} {'Результат'}")
+        print("-" * 70)
+        
+        for name, result in search_results.items():
+            status = "Найден" if result['found'] else "Не найден"
+            print(f"{name:<20} {result['index']:<10} {result['time']:<12.6f} {result['operations']:<15} {status}")
+        
+        # Сравнительный анализ
+        print("\n" + "=" * 50)
+        print("СРАВНИТЕЛЬНЫЙ АНАЛИЗ")
+        print("=" * 50)
+        
+        # Самый быстрый алгоритм сортировки
+        fastest_sort = min(sort_results.items(), key=lambda x: x[1]['time'])
+        print(f"Самый быстрый алгоритм сортировки: {fastest_sort[0]} ({fastest_sort[1]['time']:.6f} сек)")
+        
+        # Самый эффективный алгоритм сортировки по операциям
+        most_efficient_sort = min(sort_results.items(), key=lambda x: x[1]['operations'])
+        print(f"Самый эффективный алгоритм сортировки (по операциям): {most_efficient_sort[0]} ({most_efficient_sort[1]['operations']} операций)")
+        
+        # Самый быстрый алгоритм поиска
+        fastest_search = min(search_results.items(), key=lambda x: x[1]['time'])
+        print(f"Самый быстрый алгоритм поиска: {fastast_search[0]} ({fastast_search[1]['time']:.6f} сек)")
+        
+        # Самый эффективный алгоритм поиска по операциям
+        most_efficient_search = min(search_results.items(), key=lambda x: x[1]['operations'])
+        print(f"Самый эффективный алгоритм поиска (по операциям): {most_efficient_search[0]} ({most_efficient_search[1]['operations']} операций)")
+        
+        # Визуализация результатов
+        self.plot_results(sort_results, search_results)
+        
+        return sort_results, search_results
+    
+    def plot_results(self, sort_results: Dict, search_results: Dict):
+        """Визуализирует результаты"""
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+        
+        # График времени сортировки
+        sort_names = list(sort_results.keys())
+        sort_times = [sort_results[name]['time'] for name in sort_names]
+        
+        bars1 = ax1.bar(sort_names, sort_times, color='skyblue')
+        ax1.set_title('Время выполнения алгоритмов сортировки')
+        ax1.set_ylabel('Время (секунды)')
+        ax1.tick_params(axis='x', rotation=45)
+        
+        # Добавляем значения на столбцы
+        for bar, time_val in zip(bars1, sort_times):
+            height = bar.get_height()
+            ax1.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{time_val:.6f}', ha='center', va='bottom', fontsize=8)
+        
+        # График времени поиска
+        search_names = list(search_results.keys())
+        search_times = [search_results[name]['time'] for name in search_names]
+        
+        bars2 = ax2.bar(search_names, search_times, color='lightcoral')
+        ax2.set_title('Время выполнения алгоритмов поиска')
+        ax2.set_ylabel('Время (секунды)')
+        ax2.tick_params(axis='x', rotation=45)
+        
+        # Добавляем значения на столбцы
+        for bar, time_val in zip(bars2, search_times):
+            height = bar.get_height()
+            ax2.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{time_val:.6f}', ha='center', va='bottom', fontsize=8)
+        
+        plt.tight_layout()
+        plt.savefig('sorting_searching_performance.png', dpi=300, bbox_inches='tight')
+        plt.show()
+
+# Демонстрация работы
+if __name__ == "__main__":
+    analyzer = PerformanceAnalyzer()
+    
+    # Тестирование на небольшом наборе данных для демонстрации
+    print("ДЕМОНСТРАЦИЯ РАБОТЫ АЛГОРИТМОВ")
+    print("=" * 50)
+    
+    # Создаем тестовые данные
+    test_data = [64, 34, 25, 12, 22, 11, 90, 5]
+    algorithms = SortingSearchingAlgorithms()
+    
+    print(f"Исходные данные: {test_data}")
+    
+    # Демонстрация сортировки
+    sorted_selection = algorithms.selection_sort(test_data)
+    print(f"\nСортировка выбором: {sorted_selection}")
+    print(f"Время: {algorithms.time_taken:.6f} сек, Операции: {algorithms.operations_count}")
+    
+    sorted_bubble = algorithms.bubble_sort(test_data)
+    print(f"Сортировка пузырьком: {sorted_bubble}")
+    print(f"Время: {algorithms.time_taken:.6f} сек, Операции: {algorithms.operations_count}")
+    
+    # Демонстрация поиска
+    sorted_for_search = sorted(test_data)
+    target = 22
+    print(f"\nПоиск элемента {target} в массиве {sorted_for_search}")
+    
+    index_seq, stats_seq = algorithms.sequential_search(sorted_for_search, target)
+    print(f"Последовательный поиск: индекс {index_seq}")
+    print(f"Время: {stats_seq['time']:.6f} сек, Операции: {stats_seq['operations']}")
+    
+    index_bin, stats_bin = algorithms.binary_search(sorted_for_search, target)
+    print(f"Бинарный поиск: индекс {index_bin}")
+    print(f"Время: {stats_bin['time']:.6f} сек, Операции: {stats_bin['operations']}")
+    
+    # Полный отчет с графиками
+    print("\n" + "=" * 80)
+    print("ГЕНЕРАЦИЯ ПОЛНОГО ОТЧЕТА...")
+    print("=" * 80)
+    
+    # Для быстрой демонстрации используем небольшой размер
+    sort_results, search_results = analyzer.generate_report(size=500)
+
+//Дополнительный модуль для тестирования на разных размерах данных:
+def comprehensive_analysis():
+    """Проводит комплексный анализ на разных размерах данных"""
+    analyzer = PerformanceAnalyzer()
+    sizes = [100, 500, 1000, 2000]
+    
+    all_sort_results = {}
+    all_search_results = {}
+    
+    for size in sizes:
+        print(f"\n{'#' * 60}")
+        print(f"АНАЛИЗ ДЛЯ РАЗМЕРА ДАННЫХ: {size}")
+        print(f"{'#' * 60}")
+        
+        sort_results, search_results = analyzer.generate_report(size)
+        all_sort_results[size] = sort_results
+        all_search_results[size] = search_results
+    
+    # Сравнительный график по разным размерам
+    plt.figure(figsize=(12, 8))
+    
+    algorithms = ['Selection Sort', 'Bubble Sort', 'Insertion Sort', 
+                  'Merge Sort', 'Quick Sort', 'Heap Sort']
+    
+    for algo in algorithms:
+        times = []
+        for size in sizes:
+            if algo in all_sort_results[size]:
+                times.append(all_sort_results[size][algo]['time'])
+            else:
+                times.append(0)
+        plt.plot(sizes, times, marker='o', label=algo)
+    
+    plt.xlabel('Размер данных')
+    plt.ylabel('Время (секунды)')
+    plt.title('Сравнение алгоритмов сортировки на разных размерах данных')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('sorting_comparison.png', dpi=300, bbox_inches='tight')
+    plt.show()
+
+# Запуск комплексного анализа
+# comprehensive_analysis()
+
