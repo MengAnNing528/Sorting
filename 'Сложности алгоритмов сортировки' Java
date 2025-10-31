@@ -44,9 +44,53 @@ void quicksort(int* l, int* r) {
 }
 // Сложность: O(n log n) средний, O(n²) худший (уже отсортирован)
 
+void shellsort(int* l, int* r) {
+    while (step >= 1) {                   // O(log n) итераций
+        for (int *i = l + step; i < r; i++) { // n итераций
+            while (diff >= l && *diff > *j) { // O(n/step) в худшем
+                swap(*diff, *j);          // O(1)
+            }
+        }
+    }
+}
+// Сложность: O(n²) худший, O(n log² n) для последовательности Седжвика
 // Пирамидальная сортировка - всегда O(n log n)
 void heapsort(int* l, int* r) {
     for (int *i = l; i < r; i++) h.push(*i); // n × O(log n)
     for (int *i = l; i < r; i++) h.pop();    // n × O(log n)
 }
 // Сложность: O(n log n)
+
+public static boolean contains(int[] a, int b) {
+    for (int i : a) {                     // n итераций
+        if (i == b) return true;          // O(1)
+    }
+    return false;
+}
+// Сложность: O(n)
+
+static int binarySearch(int a[], int l, int r, int x) {
+    while (l <= r) {                      // log₂n итераций
+        int m = (l + r) / 2;              // O(1)
+        if (a[m] == x) return m;          // O(1)
+        else if (a[m] > x) r = m - 1;     // O(1)
+        else l = m + 1;                   // O(1)
+    }
+    return -1;
+}
+// Сложность: O(log n)
+
+public static int interpolationSearch(int arr[], int lo, int hi, int x) {
+    pos = lo + (((hi - lo) / (arr[hi] - arr[lo])) * (x - arr[lo]));
+    // Сложность: O(log log n) в среднем для равномерного распределения
+    // O(n) в худшем случае (неравномерное распределение)
+}
+
+public static int search(int[] arr, int x) {
+    while (c > 1) {                       // logᵩn итераций
+        int i = Math.min(offset + a, n - 1); // O(1)
+        // где φ = (1 + √5)/2 ≈ 1.618 (золотое сечение)
+    }
+}
+// Сложность: O(log n)
+
